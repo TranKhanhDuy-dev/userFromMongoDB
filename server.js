@@ -33,28 +33,16 @@ app.post('/login', async (req, res) => {
     return res.status(400).json({ success: false, message: 'Thiếu thông tin đăng nhập' });
   }
 
-  try {
-    const guest = await GuestModel.findOne({ username: username.trim() });
-    if (guest) {
-      if (password === guest.phone) {
-        const { password: _, ...guestInfo } = guest.toObject();
-        return res.status(200).json({
-          success: true,
-          message: 'Đăng nhập khách hàng thành công',
-          user: guestInfo,
-          userType: 'guest'
-        });
-      } else {
-        return res.status(401).json({ success: false, message: 'Sai mật khẩu (thực tế là sai số điện thoại)' });
-      }
+  // ----- BẮT ĐẦU CODE MỚI ĐỂ DEBUG -----
+  // Trả về ngay lập tức username và password nhận được mà không kiểm tra database
+  return res.status(200).json({
+    success: true,
+    message: 'Server đã nhận được dữ liệu thành công (đây là chế độ debug).',
+    receivedData: {
+      username: username,
+      password: password
     }
-
-    return res.status(404).json({ success: false, message: 'Tài khoản không tồn tại' });
-
-  } catch (err) {
-    console.error("Lỗi khi đăng nhập:", err);
-    return res.status(500).json({ success: false, message: 'Lỗi server' });
-  }
+  });
 });
 
 
