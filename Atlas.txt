@@ -1,1 +1,1 @@
-mongodb+srv://GigiMurin:19102024@cluster0.g8pmcwa.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+mongodb+srv://user:<password>@cluster0.g8pmcwa.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
