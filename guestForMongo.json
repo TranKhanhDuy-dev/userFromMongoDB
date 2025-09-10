@@ -1,0 +1,70 @@
+[{
+  "_id": {
+    "$oid": "684934156a27d3dbf2cca265"
+  },
+  "guestname": "Trần Khánh Duy",
+  "username": "NoeMurin0208",
+  "phone": "0932427405",
+  "password": "$2b$10$KzCE05AcMGST4oBBUxG42umTcFvP/OoXgr.oEbJIRExa9iHI2krk6",
+  "avatarPath": "/images/avatars/1750556242364-4e63ce9c22a68ef8d7b7.jpg",
+  "createdAt": {
+    "$date": "2025-06-11T07:45:25.807Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-22T07:53:01.284Z"
+  },
+  "__v": 0,
+  "address": "736 Nguyễn Trãi, Phường 11, Quận 5, Tp.HCM",
+  "email": "zoekesangtao4444@gmail.com"
+},
+{
+  "_id": {
+    "$oid": "6854ad18d4cd5728cf461ee1"
+  },
+  "guestname": "2205CT0022",
+  "username": "2205CT0022",
+  "phone": "0974641427",
+  "password": "$2b$10$ZCWnwIKuW9.zmNbiDMckvuHZArkLirXe04EupjXflIru.DfN6pFxW",
+  "avatarPath": "/images/avatars/defaultAvatar.png",
+  "createdAt": {
+    "$date": "2025-06-20T00:36:40.413Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-20T01:20:06.456Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6870707e9a401f17e3b4d5d7"
+  },
+  "guestname": "2205CT0522",
+  "username": "2205CT0522",
+  "phone": "0122768912",
+  "password": "$2b$10$Sharid1J//uTbOwF48rdGOqAO454scGiHTKD1qINzHTijP97RqwzW",
+  "avatarPath": "/images/avatars/defaultAvatar.png",
+  "createdAt": {
+    "$date": "2025-07-11T02:01:34.848Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-11T02:01:34.848Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "687070d09a401f17e3b4d5db"
+  },
+  "guestname": "2205CT2205",
+  "username": "2205CT2205",
+  "phone": "0123456789",
+  "password": "$2b$10$PLZa0gQvd8.7yrDStvUT3.zo4ZD2wf3vNt9gN8lw3a.wtLLOxzC36",
+  "avatarPath": "/images/avatars/defaultAvatar.png",
+  "createdAt": {
+    "$date": "2025-07-11T02:02:56.969Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-11T02:02:56.969Z"
+  },
+  "__v": 0
+}]
