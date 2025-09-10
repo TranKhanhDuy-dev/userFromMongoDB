@@ -34,7 +34,7 @@ app.post('/login', async (req, res) => {
   }
 
   try {
-    const guest = await GuestModel.findOne({ username });
+    const guest = await GuestModel.findOne({ username: username.trim() });
     if (guest) {
       if (password === guest.phone) {
         const { password: _, ...guestInfo } = guest.toObject();
