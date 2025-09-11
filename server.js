@@ -33,8 +33,6 @@ app.post('/login', async (req, res) => {
     return res.status(400).json({ success: false, message: 'Thiếu thông tin đăng nhập' });
   }
 
-  // ----- BẮT ĐẦU CODE MỚI ĐỂ DEBUG -----
-  // Trả về ngay lập tức username và password nhận được mà không kiểm tra database
   return res.status(200).json({
     success: true,
     message: 'Server đã nhận được dữ liệu thành công (đây là chế độ debug).',
