@@ -70,9 +70,9 @@ app.post('/register', async (req, res) => {
 
 //Login route
 app.post('/login', async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
   try {
-    const user = await GuestModel.findOne({ username });
+    const user = await GuestModel.findOne({ email });
 
     if (!user) {
       return res.status(401).json({
@@ -95,7 +95,6 @@ app.post('/login', async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
     return res.status(500).json({
       success: false,
       message: 'Server error',
