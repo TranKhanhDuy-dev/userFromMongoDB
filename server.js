@@ -46,11 +46,7 @@ app.post('/register', async (req, res) => {
 
         const newUser = new GuestModel({
             username,
-            phone,
-            email,
             password: hashedPassword,
-            gender,
-            birth
         });
 
         const savedUser = await newUser.save();
