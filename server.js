@@ -73,7 +73,7 @@ app.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
     const trimmedEmail = email.trim();
-    const user = await GuestModel.findOne({ email: new RegExp('^' + trimmedEmail + '$', 'i') });
+    const user = await GuestModel.findOne({ email: trimmedEmail });
 
     if (!user) {
       return res.status(401).json({
