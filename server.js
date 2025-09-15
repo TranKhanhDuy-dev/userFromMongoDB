@@ -7,42 +7,126 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/pizza')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/simpble_db')
   .then(() => {
     console.log('✅ MongoDB connected successfully');
   })
   .catch(err => console.error('❌ MongoDB connection failed:', err.message));
 
 const guestSchema = new mongoose.Schema({
-  guestname: { type: String, required: true },
   username: { type: String, required: true, unique: true },
   phone: { type: String, required: true, unique: true },
   email: { type: String },
-  address: { type: String },
-  password: { type: String, required: true },
-  avatarPath: { type: String }
+  gender: { type: String},
+  birth: { type: Date },
+  password: { type: String, required: true }
 }, { timestamps: true });
 
-const GuestModel = mongoose.model('guests', guestSchema);
+const GuestModel = mongoose.model('users', guestSchema);
 
+//Register route
+app.post('/register', async (req, res) => {
+    const {email, password} = req.body;
 
-app.post('/login', async (req, res) => {
-  const { username, password } = req.body;
+    try {
+        const existingUser = await GuestModel.findOne({email: email});
 
-  if (!username || !password) {
-    return res.status(400).json({ success: false, message: 'Thiếu thông tin đăng nhập' });
-  }
+        if (existingUser) {
+            if (existingUser.email === email) {
+                message = 'Your email is already in use';
+            }
+            return res.status(409).json({
+                success: false,
+                message: message,
+            });
+        }
 
-  return res.status(200).json({
-    success: true,
-    message: 'Server đã nhận được dữ liệu thành công (đây là chế độ debug).',
-    receivedData: {
-      username: username,
-      password: password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const newUser = new GuestModel({
+            username,
+            phone,
+            email,
+            password: hashedPassword,
+            gender,
+            birth
+        });
+
+        const savedUser = await newUser.save();
+        const userResponse = savedUser.toObject();
+        delete userResponse.password;
+
+        return res.status(201).json({
+            success: true,
+            message: 'Create account successfully',
+            user: userResponse
+        });
+
+    } catch (error) {
+        console.error("Lỗi server khi đăng ký:", error);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error',
+        });
     }
-  });
 });
 
+//Login route
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const user = await GuestModel.findOne({ username });
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: 'Wrong password',
+      });
+    }
+
+    return res.status(200).json({
+      success: true
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error',
+    });
+  }
+});
+
+//List route
+app.get('/users', async (req, res) => {
+    try {
+        const users = await GuestModel.find({}).select('-password');
+
+        return res.status(200).json({
+            success: true,
+            message: 'List of users retrieved successfully',
+            count: users.length,
+            users: users
+        });
+
+    } catch (error) {
+        console.error("Lỗi server khi lấy danh sách người dùng:", error);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error',
+        });
+    }
+});
 
 const PORT = 5000;
 app.listen(PORT, () => {

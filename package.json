@@ -9,11 +9,20 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "mongoose": "^8.18.1"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TranKhanhDuy-dev/userFromMongoDB.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TranKhanhDuy-dev/userFromMongoDB/issues"
+  },
+  "homepage": "https://github.com/TranKhanhDuy-dev/userFromMongoDB#readme",
+  "description": ""
 }
