@@ -45,7 +45,7 @@ app.post('/register', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         const newUser = new GuestModel({
-            username,
+            email: email,
             password: hashedPassword,
         });
 
