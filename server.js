@@ -14,9 +14,9 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/simpble_d
   .catch(err => console.error('❌ MongoDB connection failed:', err.message));
 
 const guestSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  phone: { type: String, required: true, unique: true },
-  email: { type: String },
+  username: { type: String},
+  phone: { type: String},
+  email: { type: String, required: true, unique: true },
   gender: { type: String},
   birth: { type: Date },
   password: { type: String, required: true }
