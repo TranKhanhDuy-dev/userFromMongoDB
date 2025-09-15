@@ -45,7 +45,7 @@ app.post('/register', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         const newUser = new GuestModel({
-            email: email,
+            email: email.toLowerCase(),
             password: hashedPassword,
         });
 
@@ -72,7 +72,8 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await GuestModel.findOne({ email });
+    const trimmedEmail = email.trim();
+    const user = await GuestModel.findOne({ email: new RegExp('^' + trimmedEmail + '$', 'i') });
 
     if (!user) {
       return res.status(401).json({
