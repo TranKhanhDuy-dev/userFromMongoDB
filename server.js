@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/simpble_db')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/simple_db')
   .then(() => {
     console.log('✅ MongoDB connected successfully');
   })
