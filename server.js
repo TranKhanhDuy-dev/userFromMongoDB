@@ -27,7 +27,7 @@ const GuestModel = mongoose.model('users', guestSchema);
 
 //User route
 app.post('/post', async (req, res) => {
-    const { id, email, password, name, address, phone, gender, birth} = req.body;
+    const { id, email, password, name, address, phone, gender, birthString} = req.body;
     const numericId = parseInt(id, 10);
     // 1: Register
     if (numericId  === 1) {
@@ -60,7 +60,6 @@ app.post('/post', async (req, res) => {
           });
 
       } catch (error) {
-          console.error("Lỗi server khi đăng ký:", error);
           return res.status(500).json({
               success: false,
               message: 'Server error',
@@ -109,7 +108,7 @@ app.post('/post', async (req, res) => {
         updateFields.phone = phone;
         updateFields.address = address;
         updateFields.gender = gender;
-        updateFields.birth = birth;
+        updateFields.birth = birthString;
 
         const updatedUser = await GuestModel.findOneAndUpdate(
             { email: userEmail },
