@@ -29,10 +29,10 @@ const GuestModel = mongoose.model('users', guestSchema);
 app.post('/post', async (req, res) => {
     const { id, email, password, name, address, phone, gender, birthString} = req.body;
     const numericId = parseInt(id, 10);
-    return res.status(500).json({
-              success: false,
-              message: `Server error with received data: ${JSON.stringify(req.body)}`
-          });
+    return res.status(409).json({
+                  success: false,
+                  message: 'Your id is: ' + numericId + '/' + id,
+              });
     // 1: Register
     if (numericId  === 1) {
       try {
