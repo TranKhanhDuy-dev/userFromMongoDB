@@ -62,7 +62,7 @@ app.post('/post', async (req, res) => {
       } catch (error) {
           return res.status(500).json({
               success: false,
-              message: 'Server error',
+              message: `Server error with received data: ${JSON.stringify(req.body)}`
           });
       }
     }
@@ -95,7 +95,7 @@ app.post('/post', async (req, res) => {
       } catch (error) {
         return res.status(500).json({
           success: false,
-          message: 'Server error',
+          message: `Server error with received data: ${JSON.stringify(req.body)}`
         });
       }
     }
