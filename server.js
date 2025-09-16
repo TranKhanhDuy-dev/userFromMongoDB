@@ -26,7 +26,7 @@ const guestSchema = new mongoose.Schema({
 const GuestModel = mongoose.model('users', guestSchema);
 
 //User route
-app.post('/user', async (req, res) => {
+app.post('/post', async (req, res) => {
     const { id, email, password, name, address, phone, gender, birth} = req.body;
     const numericId = parseInt(id, 10);
     // 1: Register
