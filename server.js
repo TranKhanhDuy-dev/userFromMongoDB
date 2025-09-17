@@ -25,7 +25,7 @@ const guestSchema = new mongoose.Schema({
 
 const GuestModel = mongoose.model('users', guestSchema);
 
-const userFieldsToReturn = 'username phone email address gender -_id';
+const userFieldsToReturn = 'username phone email gender -_id';
 
 //Post route
 app.post('/post', async (req, res) => {
