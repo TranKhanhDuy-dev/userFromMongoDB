@@ -27,119 +27,124 @@ const GuestModel = mongoose.model('users', guestSchema);
 
 //User route
 app.post('/post', async (req, res) => {
-    const { id, email, password, name, address, phone, gender, birthString} = req.body;
-    const numericId = parseInt(id, 10);
-    
-    // 1: Register
-    if (numericId  === 1) {
-      try {
-          const existingUser = await GuestModel.findOne({email: email});
+    const { mode, email, password, name, address, phone, gender, birthString } = req.body;
+    const numericMode = parseInt(mode, 10);
+    switch (numericMode) {
+        // Case 1: Register
+        case 1:
+            try {
+                const existingUser = await GuestModel.findOne({ email: email });
 
-          if (existingUser) {
-              return res.status(409).json({
-                  success: false,
-                  message: 'Your email is already in use',
-              });
-          }
+                if (existingUser) {
+                    return res.status(409).json({
+                        success: false,
+                        message: 'Your email is already in use',
+                    });
+                }
 
-          const salt = await bcrypt.genSalt(10);
-          const hashedPassword = await bcrypt.hash(password, salt);
+                const salt = await bcrypt.genSalt(10);
+                const hashedPassword = await bcrypt.hash(password, salt);
 
-          const newUser = new GuestModel({
-              email: email,
-              password: hashedPassword,
-          });
+                const newUser = new GuestModel({
+                    email: email,
+                    password: hashedPassword,
+                });
 
-          const savedUser = await newUser.save();
-          const userResponse = savedUser.toObject();
-          delete userResponse.password;
+                const savedUser = await newUser.save();
+                const userResponse = savedUser.toObject();
+                delete userResponse.password;
 
-          return res.status(201).json({
-              success: true,
-              message: 'Create account successfully',
-              user: userResponse
-          });
+                return res.status(201).json({
+                    success: true,
+                    message: 'Create account successfully',
+                    user: userResponse
+                });
 
-      } catch (error) {
-          return res.status(500).json({
-              success: false,
-              message: `Server error with received data: ${JSON.stringify(req.body)}`
-          });
-      }
-    }
-    // 2: Login
-    else if(numericId === 2) {
-      try {
-        const trimmedEmail = email.trim();
-        const user = await GuestModel.findOne({ email: trimmedEmail });
+            } catch (error) {
+                return res.status(500).json({
+                    success: false,
+                    message: `Server error with received data: ${JSON.stringify(req.body)}`
+                });
+            }
+        // Case 2: Login
+        case 2:
+            try {
+                const trimmedEmail = email.trim();
+                const user = await GuestModel.findOne({ email: trimmedEmail });
 
-        if (!user) {
-          return res.status(401).json({
-            success: false,
-            message: 'User not found',
-          });
-        }
+                if (!user) {
+                    return res.status(401).json({
+                        success: false,
+                        message: 'User not found',
+                    });
+                }
 
-        const isMatch = await bcrypt.compare(password, user.password);
+                const isMatch = await bcrypt.compare(password, user.password);
 
-        if (!isMatch) {
-          return res.status(401).json({
-            success: false,
-            message: 'Wrong password',
-          });
-        }
+                if (!isMatch) {
+                    return res.status(401).json({
+                        success: false,
+                        message: 'Wrong password',
+                    });
+                }
 
-        return res.status(200).json({
-          success: true
-        });
+                return res.status(200).json({
+                    success: true
+                });
 
-      } catch (error) {
-        return res.status(500).json({
-          success: false,
-          message: `Server error with received data: ${JSON.stringify(req.body)}`
-        });
-      }
-    }
-    //3: Add information
-    else if(numericId === 3) {
-      try {
-        const userEmail = req.body.email;
-        const updateFields = {};
-        updateFields.username = name;
-        updateFields.phone = phone;
-        updateFields.address = address;
-        updateFields.gender = gender;
-        updateFields.birth = birthString;
+            } catch (error) {
+                return res.status(500).json({
+                    success: false,
+                    message: `Server error with received data: ${JSON.stringify(req.body)}`
+                });
+            }
 
-        const updatedUser = await GuestModel.findOneAndUpdate(
-            { email: userEmail },
-            {$set: updateFields },
-            { new: true }
-        ).select('-password -email');
+        // Case 3: update user information
+        case 3:
+            try {
+                const userEmail = req.body.email;
+                const updateFields = {
+                    username: name,
+                    phone: phone,
+                    address: address,
+                    gender: gender,
+                    birth: birthString
+                };
 
-        if (!updatedUser) {
-          return res.status(404).json({
-            success: false,
-            message: 'User with this email not found'
-          });
-        }
+                const updatedUser = await GuestModel.findOneAndUpdate(
+                    { email: userEmail },
+                    { $set: updateFields },
+                    { new: true }
+                ).select('-password -email');
 
-        return res.status(200).json({
-          success: true,
-          message: 'User information updated successfully',
-          user: updatedUser
-        });
+                if (!updatedUser) {
+                    return res.status(404).json({
+                        success: false,
+                        message: 'User with this email not found'
+                    });
+                }
 
-      } catch (error) {
-        return res.status(500).json({
-          success: false,
-          message: `Server error with received data: ${JSON.stringify(req.body)}`
-        });
-      }
+                return res.status(200).json({
+                    success: true,
+                    message: 'User information updated successfully',
+                    user: updatedUser
+                });
+
+            } catch (error) {
+                return res.status(500).json({
+                    success: false,
+                    message: `Server error with received data: ${JSON.stringify(req.body)}`
+                });
+            }
+        default:
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid mode specified. Please provide a valid mode (1, 2, or 3).'
+            });
     }
 });
 
 const PORT = 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT}`);
+    console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
