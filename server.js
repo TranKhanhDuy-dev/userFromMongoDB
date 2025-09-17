@@ -90,7 +90,7 @@ app.post('/post', async (req, res) => {
                     });
                 }
 
-                const userResponse = await GuestModel.findById(savedUser._id).select(userFieldsToReturn);
+                const userResponse = await GuestModel.findById(user._id).select(userFieldsToReturn);
                 return res.status(201).json({
                     success: true,
                     message: 'Create account successfully',
