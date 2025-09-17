@@ -25,7 +25,7 @@ const guestSchema = new mongoose.Schema({
 
 const GuestModel = mongoose.model('users', guestSchema);
 
-//User route
+//Post route
 app.post('/post', async (req, res) => {
     const { mode, email, password, name, address, phone, gender, birthString } = req.body;
     const numericMode = parseInt(mode, 10);
@@ -89,7 +89,8 @@ app.post('/post', async (req, res) => {
                 }
 
                 return res.status(200).json({
-                    success: true
+                    success: true,
+                    user: user
                 });
 
             } catch (error) {
