@@ -25,6 +25,8 @@ const guestSchema = new mongoose.Schema({
 
 const GuestModel = mongoose.model('users', guestSchema);
 
+const userFieldsToReturn = 'username phone email address gender birth';
+
 //Post route
 app.post('/post', async (req, res) => {
     const { mode, email, password, name, address, phone, gender, birthString } = req.body;
@@ -88,9 +90,11 @@ app.post('/post', async (req, res) => {
                     });
                 }
 
-                return res.status(200).json({
+                const userResponse = await GuestModel.findById(savedUser._id).select(userFieldsToReturn);
+                return res.status(201).json({
                     success: true,
-                    user: user
+                    message: 'Create account successfully',
+                    user: userResponse
                 });
 
             } catch (error) {
