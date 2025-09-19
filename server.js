@@ -130,7 +130,7 @@ app.post('/post', async (req, res) => {
                     { email: userEmail },
                     { $set: updateFields },
                     { new: true }
-                ).select('-password -email');
+                );
 
                 if (!updatedUser) {
                     return res.status(404).json({
@@ -139,10 +139,19 @@ app.post('/post', async (req, res) => {
                     });
                 }
 
+                const userResponse = {
+                    email: updatedUser.email,
+                    name: updatedUser.name,
+                    phone: updatedUser.phone,
+                    mssv: updatedUser.mssv,
+                    gender: updatedUser.gender,
+                    coin: updatedUser.coin
+                };
+                
                 return res.status(200).json({
                     success: true,
-                    message: 'User information updated successfully',
-                    user: updatedUser
+                    user: userResponse,
+                    birthdate: updatedUser.birth
                 });
 
             } catch (error) {
@@ -151,11 +160,6 @@ app.post('/post', async (req, res) => {
                     message: `Server error with received data: ${JSON.stringify(req.body)}`
                 });
             }
-        default:
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid mode specified. Please provide a valid mode (1, 2, or 3).'
-            });
     }
 });
 
