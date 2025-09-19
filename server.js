@@ -163,10 +163,13 @@ app.post('/post', async (req, res) => {
                     coin: updatedUser.coin
                 };
                 
+                const birthdateResponse = updateFields.birth;
+                delete updateFields.birth;
+                
                 return res.status(200).json({
                     success: true,
-                    user: userResponse,
-                    birthdate: updatedUser.birth
+                    user: updateFields,
+                    birthdate: birthdateResponse
                 });
 
             } catch (error) {
