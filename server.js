@@ -14,13 +14,13 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/simple_db
     .catch(err => console.error('❌ MongoDB connection failed:', err.message));
 
 const guestSchema = new mongoose.Schema({
-    name: { type: String },
-    phone: { type: String },
+    name: { type: String, default: '' },
+    phone: { type: String, default: '' },
     email: { type: String, required: true, unique: true },
-    gender: { type: String },
+    gender: { type: String, default: '' },
     birth: { type: Date },
     password: { type: String, required: true },
-    mssv: { type: String },
+    mssv: { type: String, default: '' },
     coin: { type: Number, default: 0 }
 }, { timestamps: true });
 
