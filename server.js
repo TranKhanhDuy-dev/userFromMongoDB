@@ -109,7 +109,7 @@ app.post('/post', async (req, res) => {
                     gender: user.gender,
                     coin: user.coin
                 };
-
+                
                 return res.status(200).json({
                     success: true,
                     user: userResponse,
@@ -128,7 +128,7 @@ app.post('/post', async (req, res) => {
         case 3:
             try {
                 const updateFields = {};
-
+                
                 if (birthString) {
                     const parts = birthString.split('/');
                     if (parts.length === 3) {
@@ -146,7 +146,7 @@ app.post('/post', async (req, res) => {
                     { $set: updateFields },
                     { new: true }
                 );
-
+                
                 if (!updatedUser) {
                     return res.status(404).json({
                         success: false,
@@ -163,13 +163,11 @@ app.post('/post', async (req, res) => {
                     coin: updatedUser.coin
                 };
                 
-                const birthdateResponse = updateFields.birth;
-                delete updateFields.birth;
-                
                 return res.status(200).json({
                     success: true,
-                    user: updateFields,
-                    birthdate: birthdateResponse
+                    message: 'User information updated successfully',
+                    inforUpdate: userResponse,
+                    birthdate: updatedUser.birth
                 });
 
             } catch (error) {
