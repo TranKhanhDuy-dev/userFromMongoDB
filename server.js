@@ -132,6 +132,13 @@ app.post('/post', async (req, res) => {
                     coin: coin
                 };
 
+                if (!updatedUser) {
+                    return res.status(404).json({
+                        success: false,
+                        message: 'User with this email not found to update'
+                    });
+                }
+
                 const updatedUser = await GuestModel.findOneAndUpdate(
                     { email: userEmail },
                     { $set: updateFields },
