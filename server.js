@@ -14,22 +14,23 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/simple_db
   .catch(err => console.error('❌ MongoDB connection failed:', err.message));
 
 const guestSchema = new mongoose.Schema({
-  username: { type: String},
+  name: { type: String},
   phone: { type: String},
   email: { type: String, required: true, unique: true },
-  address: { type: String},
   gender: { type: String},
   birth: { type: Date },
-  password: { type: String, required: true }
+  password: { type: String, required: true },
+  mssv: { type: String },
+  coin: { type: Number, default: 0 }
 }, { timestamps: true });
 
 const GuestModel = mongoose.model('users', guestSchema);
 
-const userFieldsToReturn = 'username phone email gender -_id';
+const userFieldsToReturn = 'email name phone mssv gender coin -_id';
 
 //Post route
 app.post('/post', async (req, res) => {
-    const { mode, email, password, name, address, phone, gender, birthString } = req.body;
+    const { mode, email, password, name, phone, mssv, gender, birthString, coin } = req.body;
     const numericMode = parseInt(mode, 10);
     switch (numericMode) {
         // Case 1: Register
@@ -50,6 +51,7 @@ app.post('/post', async (req, res) => {
                 const newUser = new GuestModel({
                     email: email,
                     password: hashedPassword,
+                    coin: 1000,
                 });
 
                 const savedUser = await newUser.save();
@@ -91,9 +93,11 @@ app.post('/post', async (req, res) => {
                 }
 
                 const userResponse = await GuestModel.findById(user._id).select(userFieldsToReturn);
+                const birhtdateResponse = await GuestModel.findById(user._id).select(birth);
                 return res.status(201).json({
                     success: true,
-                    user: userResponse
+                    user: userResponse,
+                    birthdate: birhtdateResponse
                 });
 
             } catch (error) {
@@ -108,11 +112,12 @@ app.post('/post', async (req, res) => {
             try {
                 const userEmail = req.body.email;
                 const updateFields = {
-                    username: name,
+                    name: name,
                     phone: phone,
-                    address: address,
+                    mssv: mssv,
                     gender: gender,
-                    birth: birthString
+                    birth: birthString,
+                    coin: coin
                 };
 
                 const updatedUser = await GuestModel.findOneAndUpdate(
