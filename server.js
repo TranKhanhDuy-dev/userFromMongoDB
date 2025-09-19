@@ -91,19 +91,25 @@ app.post('/post', async (req, res) => {
                         message: 'Wrong password',
                     });
                 }
+                const userResponse = {
+                    email: user.email,
+                    name: user.name,
+                    phone: user.phone,
+                    mssv: user.mssv,
+                    gender: user.gender,
+                    coin: user.coin
+                };
 
-                const userResponse = await GuestModel.findById(user._id).select(userFieldsToReturn);
-                const birhtdateResponse = await GuestModel.findById(user._id).select(birth);
-                return res.status(201).json({
+                return res.status(200).json({
                     success: true,
                     user: userResponse,
-                    birthdate: birhtdateResponse
+                    birthdate: user.birth
                 });
 
             } catch (error) {
                 return res.status(500).json({
                     success: false,
-                    message: `Server error with received data: ${JSON.stringify(req.body)}`
+                    message: `Server error: ${error.message}`
                 });
             }
 
