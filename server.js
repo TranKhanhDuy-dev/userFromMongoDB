@@ -117,6 +117,12 @@ app.post('/post', async (req, res) => {
         case 3:
             try {
                 const userEmail = req.body.email;
+                if (birthString) {
+                    const parts = birthString.split('/');
+                    if (parts.length === 3) {
+                        updateFields.birth = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+                    }
+                }
                 const updateFields = {
                     name: name,
                     phone: phone,
