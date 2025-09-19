@@ -18,7 +18,7 @@ const guestSchema = new mongoose.Schema({
     phone: { type: String, default: '' },
     email: { type: String, required: true, unique: true },
     gender: { type: String, default: '' },
-    birth: { type: Date },
+    birth: { type: Date, default: null },
     password: { type: String, required: true },
     mssv: { type: String, default: '' },
     coin: { type: Number, default: 0 }
