@@ -8,30 +8,29 @@ app.use(cors());
 app.use(express.json());
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/simple_db')
-  .then(() => {
-    console.log('✅ MongoDB connected successfully');
-  })
-  .catch(err => console.error('❌ MongoDB connection failed:', err.message));
+    .then(() => {
+        console.log('✅ MongoDB connected successfully');
+    })
+    .catch(err => console.error('❌ MongoDB connection failed:', err.message));
 
 const guestSchema = new mongoose.Schema({
-  name: { type: String},
-  phone: { type: String},
-  email: { type: String, required: true, unique: true },
-  gender: { type: String},
-  birth: { type: Date },
-  password: { type: String, required: true },
-  mssv: { type: String },
-  coin: { type: Number, default: 0 }
+    name: { type: String },
+    phone: { type: String },
+    email: { type: String, required: true, unique: true },
+    gender: { type: String },
+    birth: { type: Date },
+    password: { type: String, required: true },
+    mssv: { type: String },
+    coin: { type: Number, default: 0 }
 }, { timestamps: true });
 
 const GuestModel = mongoose.model('users', guestSchema);
-
-const userFieldsToReturn = 'email name phone mssv gender coin -_id';
 
 //Post route
 app.post('/post', async (req, res) => {
     const { mode, email, password, name, phone, mssv, gender, birthString, coin } = req.body;
     const numericMode = parseInt(mode, 10);
+
     switch (numericMode) {
         // Case 1: Register
         case 1:
@@ -55,21 +54,31 @@ app.post('/post', async (req, res) => {
                 });
 
                 const savedUser = await newUser.save();
-                const userResponse = savedUser.toObject();
-                delete userResponse.password;
+
+                const userResponse = {
+                    email: savedUser.email,
+                    name: savedUser.name,
+                    phone: savedUser.phone,
+                    mssv: savedUser.mssv,
+                    gender: savedUser.gender,
+                    coin: savedUser.coin
+                };
 
                 return res.status(201).json({
                     success: true,
                     message: 'Create account successfully',
-                    user: userResponse
+                    user: userResponse,
+                    birthdate: savedUser.birth
                 });
 
             } catch (error) {
                 return res.status(500).json({
                     success: false,
-                    message: `Server error with received data: ${JSON.stringify(req.body)}`
+                    message: `Server error: ${error.message}`
                 });
             }
+            break;
+
         // Case 2: Login
         case 2:
             try {
@@ -91,6 +100,7 @@ app.post('/post', async (req, res) => {
                         message: 'Wrong password',
                     });
                 }
+
                 const userResponse = {
                     email: user.email,
                     name: user.name,
@@ -112,35 +122,27 @@ app.post('/post', async (req, res) => {
                     message: `Server error: ${error.message}`
                 });
             }
+            break;
 
-        // Case 3: update user information
+        // Case 3: Update user information
         case 3:
             try {
-                const userEmail = req.body.email;
+                const updateFields = {};
+
                 if (birthString) {
                     const parts = birthString.split('/');
                     if (parts.length === 3) {
                         updateFields.birth = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
                     }
                 }
-                const updateFields = {
-                    name: name,
-                    phone: phone,
-                    mssv: mssv,
-                    gender: gender,
-                    birth: birthString,
-                    coin: coin
-                };
-
-                if (!updatedUser) {
-                    return res.status(404).json({
-                        success: false,
-                        message: 'User with this email not found to update'
-                    });
+                
+                const numericCoin = parseInt(coin, 10);
+                if (!isNaN(numericCoin)) {
+                    updateFields.coin = numericCoin;
                 }
-
+                
                 const updatedUser = await GuestModel.findOneAndUpdate(
-                    { email: userEmail },
+                    { email: email },
                     { $set: updateFields },
                     { new: true }
                 );
@@ -148,7 +150,7 @@ app.post('/post', async (req, res) => {
                 if (!updatedUser) {
                     return res.status(404).json({
                         success: false,
-                        message: 'User with this email not found'
+                        message: 'User with this email not found to update'
                     });
                 }
 
@@ -170,9 +172,16 @@ app.post('/post', async (req, res) => {
             } catch (error) {
                 return res.status(500).json({
                     success: false,
-                    message: `Server error with received data: ${JSON.stringify(req.body)}`
+                    message: `Server error: ${error.message}`
                 });
             }
+            break;
+
+        default:
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid mode specified. Please provide a valid mode.'
+            });
     }
 });
 
